@@ -1,0 +1,2 @@
+# entity_relation_extraction
+基于依存分析的实体关系抽取
