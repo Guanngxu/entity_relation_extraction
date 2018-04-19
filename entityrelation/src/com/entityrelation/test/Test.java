@@ -1,11 +1,15 @@
 package com.entityrelation.test;
 
+import com.entityrelation.utils.FileUtil;
 import com.entityrelation.utils.RelationUtil;
 import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.model.perceptron.Main;
 import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
 import com.hankcs.hanlp.seg.common.Term;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,18 +61,39 @@ public class Test {
 
         String str = "俄罗斯9月31日出兵，开始在叙利亚对“伊斯兰国”发动猛烈空袭，战果显著，俄总统弗拉基米尔·普京本月16日宣布，由于俄客机上月31日在埃及上空遭炸弹袭击而坠毁，俄方将强化在叙空袭行动，次日，国防部长谢尔盖·绍伊古宣布，俄将把空袭强度增为原来的两倍，并已制定针对“伊斯兰国”的新的空袭计划，决定动用远程战略轰炸机。";
 
-        List<String[]> res = RelationUtil.main(str);
+        List<String> res = RelationUtil.main(str);
 
         for (int i = 0; i < res.size(); i++) {
-            String triad[] = res.get(i);
-            System.out.println(triad[0] + "--" + triad[1] + "--" + triad[2]);
+            System.out.println(res.get(i));
         }
 
         // String word[] = {"跑", "吃饭", "哈尔滨工程大学", "刘小绪", "图书馆", "漂亮", "可爱"};
     }
 
-    public static void main(String[] args) {
-        test2();
+    public static void testFileUtil() throws Exception{
+
+        /*File[] files = FileUtil.listFile("D:\\workspace\\data\\news\\ccdicut");
+
+        for (int i = 0; i < files.length; i++) {
+            System.out.println(files[i]);
+        }*/
+
+        //System.out.println(Arrays.asList(FileUtil.readFile(new File("D:\\workspace\\data\\oneline\\test.txt"))));
+
+        List<String> contentList = new ArrayList<>();
+        contentList.add("我想试试");
+        contentList.add("我的老家，就住在这个囤");
+
+        FileUtil.writeFile("D:\\workspace\\data\\oneline\\test.txt", contentList);
+    }
+
+    private static void testFileRelation() throws Exception{
+        com.entityrelation.main.Main.fileRelationExtraction("D:\\workspace\\data\\oneline",
+                "D:\\workspace\\data\\result.txt");
+    }
+
+    public static void main(String[] args) throws Exception{
+        testFileRelation();
     }
 
 }
