@@ -8,6 +8,7 @@
 
 * 项目需要安装HanLP，相关说明请参见[HanLP使用文档](http://hanlp.linrunsoft.com/doc.html)
 * 然后运行main/Main.class即可
+* 建议导入用户词典
 
 ### Dependency
 
