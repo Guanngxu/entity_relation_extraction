@@ -3,11 +3,10 @@ package com.entityrelation.utils;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.corpus.dependency.CoNll.CoNLLSentence;
 import com.hankcs.hanlp.corpus.dependency.CoNll.CoNLLWord;
+import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by 刘绪光 on 2018/4/18.
@@ -46,10 +45,122 @@ public class RelationUtil {
 
         for (int i = 0; i < parser.size(); i++) {
 
+            // 动词表达的关系三元组
             List<String[]> relationList = extract(parser, dict, i);
 
-            result.addAll(relationList);
+            // 命名实体三元组
+            List<String[]> namedList = namedTriad(parser, dict, i);
 
+            result.addAll(relationList);
+            result.addAll(namedList);
+
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 抽取命名实体有关的三元组
+     * @param parser 句法分析
+     * @param dict  词语依存字典
+     * @param i 词语的索引
+     * @return 关系三元组列表
+     */
+    private static List<String[]> namedTriad(List<CoNLLWord> parser,
+                                             List<Map<String, List<CoNLLWord>>> dict,
+                                             int i){
+
+        List<String[]> result = new ArrayList<>();
+
+        // 词法分析器
+        PerceptronLexicalAnalyzer analyzer = null;
+        try {
+            // 使用默认模型
+            analyzer = new PerceptronLexicalAnalyzer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 构造分词数组，因为句法分析已经包含了分词信息，直接使用
+        String word[] = new String[parser.size()];
+
+        for (int j = 0; j < word.length; j++) {
+            word[j] = parser.get(j).LEMMA;
+        }
+
+        //词性标注
+        String pos[] = analyzer.getPOSTagger().tag(word);
+
+        // 命名实体识别结果
+        String named[] = analyzer.namedEntityRecognize(word, pos);
+
+        /*System.out.println(dict);
+        System.out.println(Arrays.asList(word));
+        System.out.println(Arrays.asList(pos));
+        System.out.println(Arrays.asList(named));
+        */
+
+        if (named[i].charAt(0) == 'S' || named[i].charAt(0) == 'B'){
+            int index = i;
+            String entity1 = "";
+            if (named[index].charAt(0) == 'B'){
+                while (named[index].charAt(0) != 'E'){
+                    entity1 += word[index];
+                    index++;
+                }
+            }else {
+                entity1 = word[index];
+            }
+
+            if (parser.get(index).DEPREL.equals("定中关系") &&
+                    pos[parser.get(index).HEAD.ID-1].equals("n") &&
+                    named[parser.get(index).HEAD.ID-1].equals("O")){
+
+                /*System.out.println(parser.get(index).LEMMA);
+
+                int deprel = parser.get(index).HEAD.ID-1;
+
+                System.out.println(parser.get(deprel).LEMMA);
+                System.out.println(dict.get(deprel));*/
+
+                String relation = completeEntity(parser, dict, parser.get(index).HEAD.ID-1);
+
+                if (relation.split(entity1).length > 1){
+                    relation = relation.split(entity1)[1];
+                }
+
+                if (parser.get(parser.get(index).HEAD.ID-1).DEPREL.equals("定中关系")&&
+                        !named[parser.get(parser.get(index).HEAD.ID-1).HEAD.ID-1].equals("O")){
+                    String entity2 = completeEntity(parser, dict, parser.get(parser.get(index).HEAD.ID-1).HEAD.ID-1);
+
+                    int mi = parser.get(parser.get(index).HEAD.ID-1).HEAD.ID-1;
+                    int li = mi;
+
+
+                    if (named[mi].charAt(0) == 'B'){
+                        while (named[mi].charAt(0) != 'E'){
+                            mi++;
+                        }
+                    }
+
+                    for (int j = li+1; j < mi+1; j++) {
+                        entity2 += word[j];
+                    }
+                    
+                    if (entity2.split(relation).length > 1){
+                        entity2 = entity2.split(relation)[1];
+                    }
+
+                    String triad[] = new String[3];
+                    triad[0] = entity1;
+                    triad[1] = relation;
+                    triad[2] = entity2;
+
+                    result.add(triad);
+                }
+
+            }
         }
 
         return result;
@@ -60,6 +171,7 @@ public class RelationUtil {
      * @param parser 句法依存分析
      * @param dict 词语依存字典
      * @param i 词语索引
+     * @return 三元组列表
      */
     private static List<String[]> extract(List<CoNLLWord> parser,
                                List<Map<String, List<CoNLLWord>>> dict,
@@ -302,7 +414,7 @@ public class RelationUtil {
                 CoNLLWord child = wordArray[j];
                 if (word.LEMMA.equals(child.HEAD.LEMMA)){
 
-                    if (map.containsKey(word.DEPREL)){
+                    if (map.containsKey(child.DEPREL)){
                         map.get(child.DEPREL).add(child);
                     }else {
                         List<CoNLLWord> list= new ArrayList<>();

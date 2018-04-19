@@ -2,7 +2,11 @@ package com.entityrelation.main;
 
 
 import com.entityrelation.utils.RelationUtil;
+import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
+import com.hankcs.hanlp.seg.common.Term;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +17,6 @@ public class Main {
 
     public static void main(String[] args) {
         String text[] = {"贝拉克·侯赛因·奥巴马的身世复杂，1961年8月4日出生在美国夏威夷州檀香山市，父亲是来自肯尼亚的留学生，母亲是堪萨斯州白人。",
-                        "他们二人在就读夏威夷大学期间相识。",
                         "由于父亲此后前往哈佛大学求学，奥巴马从小由母亲抚养，奥巴马两岁多时，他的父母婚姻破裂。"};
 
         for (String str:
