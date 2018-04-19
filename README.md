@@ -17,3 +17,4 @@ HanLP依存句法分析
 ### 参考
 
 [基于依存分析的开放式中文实体关系抽取方法](http://www.docin.com/p-1715877509.html)
+命名实体抽取参考自[fact_triple_extraction](https://github.com/twjiang/fact_triple_extraction)
