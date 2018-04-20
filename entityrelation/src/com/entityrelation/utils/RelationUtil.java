@@ -127,9 +127,6 @@ public class RelationUtil {
                 System.out.println(parser.get(deprel).LEMMA);
                 System.out.println(dict.get(deprel));*/
 
-                System.out.println("实体识别关系=================");
-                System.out.println(parser.get(index).HEAD.LEMMA);
-
                 String relation = completeEntity(parser, dict, parser.get(index).HEAD.ID-1);
                 entityMap.clear();
 
