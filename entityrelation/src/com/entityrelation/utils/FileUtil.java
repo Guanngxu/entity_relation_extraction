@@ -31,9 +31,10 @@ public class FileUtil {
 
         List<String> result = new ArrayList<>();
 
-        FileInputStream inputStream = new FileInputStream(file);
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-        BufferedReader reader = new BufferedReader(inputStreamReader);
+        FileReader fileReader = new FileReader(file);
+
+
+        BufferedReader reader = new BufferedReader(fileReader);
 
         String str = null;
 
@@ -41,8 +42,7 @@ public class FileUtil {
             result.add(str);
         }
 
-        inputStream.close();
-        inputStreamReader.close();
+        fileReader.close();
         reader.close();
 
         return result;

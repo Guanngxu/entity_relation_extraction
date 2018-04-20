@@ -3,6 +3,10 @@ package com.entityrelation.test;
 import com.entityrelation.utils.FileUtil;
 import com.entityrelation.utils.RelationUtil;
 import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.corpus.dependency.CoNll.CoNLLSentence;
+import com.hankcs.hanlp.corpus.dependency.CoNll.CoNLLWord;
+import com.hankcs.hanlp.dependency.CRFDependencyParser;
+import com.hankcs.hanlp.dependency.MaxEntDependencyParser;
 import com.hankcs.hanlp.model.perceptron.Main;
 import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
 import com.hankcs.hanlp.seg.common.Term;
@@ -78,13 +82,13 @@ public class Test {
             System.out.println(files[i]);
         }*/
 
-        //System.out.println(Arrays.asList(FileUtil.readFile(new File("D:\\workspace\\data\\oneline\\test.txt"))));
+        System.out.println(Arrays.asList(FileUtil.readFile(new File("D:\\workspace\\data\\oneline\\150.txt")).size()));
 
-        List<String> contentList = new ArrayList<>();
+        /*List<String> contentList = new ArrayList<>();
         contentList.add("我想试试");
         contentList.add("我的老家，就住在这个囤");
 
-        FileUtil.writeFile("D:\\workspace\\data\\oneline\\test.txt", contentList);
+        FileUtil.writeFile("D:\\workspace\\data\\oneline\\test.txt", contentList);*/
     }
 
     private static void testFileRelation() throws Exception{
@@ -93,7 +97,18 @@ public class Test {
     }
 
     public static void main(String[] args) throws Exception{
-        testFileRelation();
+
+        System.out.println(HanLP.segment("经济责任审计"));
+
+        CoNLLSentence sentence = MaxEntDependencyParser.compute("经济责任审计");
+        System.out.println(sentence);
+        // 可以方便地遍历它
+        for (CoNLLWord word : sentence)
+        {
+            System.out.printf("%s --(%s)--> %s\n", word.LEMMA, word.DEPREL, word.HEAD.LEMMA);
+        }
+
+        // testFileRelation();
     }
 
 }

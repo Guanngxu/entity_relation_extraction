@@ -3,6 +3,7 @@ package com.entityrelation.utils;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.corpus.dependency.CoNll.CoNLLSentence;
 import com.hankcs.hanlp.corpus.dependency.CoNll.CoNLLWord;
+import com.hankcs.hanlp.dependency.MaxEntDependencyParser;
 import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.util.*;
  * Created by 刘绪光 on 2018/4/18.
  */
 public class RelationUtil {
+
+    static Map<String, Integer> entityMap = new HashMap<>();
 
     /**
      * @param text 待分析的句子
@@ -124,7 +127,11 @@ public class RelationUtil {
                 System.out.println(parser.get(deprel).LEMMA);
                 System.out.println(dict.get(deprel));*/
 
+                System.out.println("实体识别关系=================");
+                System.out.println(parser.get(index).HEAD.LEMMA);
+
                 String relation = completeEntity(parser, dict, parser.get(index).HEAD.ID-1);
+                entityMap.clear();
 
                 if (relation.split(entity1).length > 1){
                     relation = relation.split(entity1)[1];
@@ -132,7 +139,11 @@ public class RelationUtil {
 
                 if (parser.get(parser.get(index).HEAD.ID-1).DEPREL.equals("定中关系")&&
                         !named[parser.get(parser.get(index).HEAD.ID-1).HEAD.ID-1].equals("O")){
+
+                    //System.out.println("命名实体类型三元组===================");
+
                     String entity2 = completeEntity(parser, dict, parser.get(parser.get(index).HEAD.ID-1).HEAD.ID-1);
+                    entityMap.clear();
 
                     int mi = parser.get(parser.get(index).HEAD.ID-1).HEAD.ID-1;
                     int li = mi;
@@ -187,9 +198,13 @@ public class RelationUtil {
 
                     for (CoNLLWord entity2:
                             dic.get("动宾关系")) {
+                        //System.out.println("主谓宾关系==========");
 
                         String preEntity = completeEntity(parser, dict, entity1.ID-1);
+                        entityMap.clear();
+
                         String rearEntity = completeEntity(parser, dict, entity2.ID-1);
+                        entityMap.clear();
 
                         result.add(preEntity + "," + relation + "," + rearEntity);
                     }
@@ -210,14 +225,22 @@ public class RelationUtil {
                                 for (CoNLLWord subjoin:
                                         dic.get("右附加关系")) {
 
+                                    //System.out.println("动补结构==========");
+
                                     String preEntity = completeEntity(parser, dict, entity1.ID-1);
+                                    entityMap.clear();
+
                                     String rearEntity = completeEntity(parser, dict, entity2.ID-1);
+                                    entityMap.clear();
 
                                     String relation = word.LEMMA + complement.LEMMA + subjoin.LEMMA;
 
                                     result.add(preEntity + "," + relation + "," + rearEntity);
                                 }
                             }else {
+
+                                //System.out.println("动补结构==========");
+
                                 String relation = word.LEMMA + complement.LEMMA;
                                 result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                             }
@@ -237,8 +260,13 @@ public class RelationUtil {
                         for (CoNLLWord entity2:
                                 dic.get("动宾关系")) {
 
+                            //System.out.println("状动结构==========");
+
                             String preEntity = completeEntity(parser, dict, entity1.ID-1);
+                            entityMap.clear();
+
                             String rearEntity = completeEntity(parser, dict, entity2.ID-1);
+                            entityMap.clear();
 
                             String relation = adverbial.LEMMA + word.LEMMA;
 
@@ -262,8 +290,13 @@ public class RelationUtil {
                             for (CoNLLWord entity2 :
                                     dic.get("动宾关系")) {
 
+                                //System.out.println("状动补结构==========");
+
                                 String preEntity = completeEntity(parser, dict, entity1.ID-1);
+                                entityMap.clear();
+
                                 String rearEntity = completeEntity(parser, dict, entity2.ID-1);
+                                entityMap.clear();
 
                                 String relation = adverbial.LEMMA + word.LEMMA + complement.LEMMA;
 
@@ -275,15 +308,20 @@ public class RelationUtil {
             }
 
             // 定语后置：父亲是来自肯尼亚的留学生
-            // 来自 是 留学生的定于
             if (word.DEPREL.equals("定中关系")){
                 if (dic.containsKey("动宾关系")){
                     CoNLLWord entity1 = word.HEAD;
                     String relation = word.LEMMA;
                     for (CoNLLWord entity2:
                             dic.get("动宾关系")) {
+
+                        //System.out.println("定语后置============");
+
                         String preEntity = completeEntity(parser, dict, entity1.ID-1);
+                        entityMap.clear();
+
                         String rearEntity = completeEntity(parser, dict, entity2.ID-1);
+                        entityMap.clear();
 
                         result.add(preEntity + "," + relation + "," + rearEntity);
                     }
@@ -307,8 +345,13 @@ public class RelationUtil {
                             for (CoNLLWord entity2:
                                     prepDict.get("介宾关系")) {
 
+                                //System.out.println("介宾关系===============");
+
                                 String preEntity = completeEntity(parser, dict, entity1.ID-1);
+                                entityMap.clear();
+
                                 String rearEntity = completeEntity(parser, dict, entity2.ID-1);
+                                entityMap.clear();
 
                                 String relation = word.LEMMA + prep.LEMMA;
 
@@ -334,8 +377,13 @@ public class RelationUtil {
                                 for (CoNLLWord entity1: //
                                         prepDict.get("介宾关系")) {
 
+                                    //System.out.println("宾语前置====================");
+
                                     String preEntity = completeEntity(parser, dict, entity1.ID-1);
+                                    entityMap.clear();
+
                                     String rearEntity = completeEntity(parser, dict, entity2.ID-1);
+                                    entityMap.clear();
 
                                     String relation = word.LEMMA;
 
@@ -404,29 +452,46 @@ public class RelationUtil {
      * @return 完善后的实体
      */
     private static String completeEntity(List<CoNLLWord> parser,
-                                        List<Map<String, List<CoNLLWord>>> dict,
-                                        int i){
-
+                                         List<Map<String, List<CoNLLWord>>> dict,
+                                         int i){
         CoNLLWord word = parser.get(i);
         Map<String, List<CoNLLWord>> dic = dict.get(i);
 
         String result1 = "";
 
         if (dic.containsKey("定中关系")){
-            for (CoNLLWord temp:
-                    dic.get("定中关系")) {
-                result1 += completeEntity(parser, dict, temp.ID-1);
+
+            entityMap.put(word.LEMMA + "定", 1);
+
+            List<CoNLLWord> words = dic.get("定中关系");
+
+            for (int j = 0; j < words.size(); j++) {
+
+                CoNLLWord temp = words.get(j);
+
+                if (!entityMap.containsKey(temp.LEMMA + "定")){
+                    result1 += completeEntity(parser, dict, temp.ID-1);
+                }
             }
+
         }
 
         String result2 = "";
 
         if (word.CPOSTAG.equals("v")){
             if (dic.containsKey("动宾关系")){
-                result2 += completeEntity(parser, dict, dic.get("动宾关系").get(0).ID-1);
+
+                // 短路功能，不会报错，包含这个键才执行后面的取值
+                if (!entityMap.containsKey(word.LEMMA + "动")){
+                    result2 += completeEntity(parser, dict, dic.get("动宾关系").get(0).ID-1);
+                    entityMap.put(word.LEMMA + "动", 1);
+                }
             }
             if (dic.containsKey("主谓关系")){
-                result2 = completeEntity(parser, dict, dic.get("主谓关系").get(0).ID-1) + result1;
+                if (!entityMap.containsKey(word.LEMMA + "主")){
+                    result1 = completeEntity(parser, dict, dic.get("主谓关系").get(0).ID-1) + result1;
+                    entityMap.put(word.LEMMA + "主", 1);
+                }
             }
         }
 
