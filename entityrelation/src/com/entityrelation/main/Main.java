@@ -6,6 +6,7 @@ import com.entityrelation.utils.RelationUtil;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by 刘绪光 on 2018/4/17.
@@ -22,7 +23,7 @@ public class Main {
 
             for (String content :
                     contentList) {
-                List<String> relationList = RelationUtil.main(content);
+                Set<String> relationList = RelationUtil.main(content);
 
                 FileUtil.writeFile(outPath, relationList);
             }
@@ -31,14 +32,15 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        String text[] = {"根据《上海市长期护理保险试点办法》（沪府发〔2016〕110号）的要求，本市开展长期护理保险试点工作。"};
+        String text[] = {"父亲非常喜欢跑步"};
 
         for (String str:
              text) {
-            List<String> res = RelationUtil.main(str);
+            Set<String> res = RelationUtil.main(str);
 
-            for (int i = 0; i < res.size(); i++) {
-                System.out.println(res.get(i));
+            for (String rel :
+                    res) {
+                System.out.println(rel);
             }
         }
 

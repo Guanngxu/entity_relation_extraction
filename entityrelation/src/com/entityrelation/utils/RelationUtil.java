@@ -41,18 +41,18 @@ public class RelationUtil {
      * @param parser 句法依存分析
      * @param dict 词语依存字典
      */
-    private static List<String> relation(List<CoNLLWord> parser,
+    private static Set<String> relation(List<CoNLLWord> parser,
                                 List<Map<String, List<CoNLLWord>>> dict){
 
-        List<String> result = new ArrayList<>();
+        Set<String> result = new HashSet<>();
 
         for (int i = 0; i < parser.size(); i++) {
 
             // 动词表达的关系三元组
-            List<String> relationList = extract(parser, dict, i);
+            Set<String> relationList = extract(parser, dict, i);
 
             // 命名实体三元组
-            List<String> namedList = namedTriad(parser, dict, i);
+            Set<String> namedList = namedTriad(parser, dict, i);
 
             result.addAll(relationList);
             result.addAll(namedList);
@@ -70,11 +70,11 @@ public class RelationUtil {
      * @param i 词语的索引
      * @return 关系三元组列表
      */
-    private static List<String> namedTriad(List<CoNLLWord> parser,
+    private static Set<String> namedTriad(List<CoNLLWord> parser,
                                              List<Map<String, List<CoNLLWord>>> dict,
                                              int i){
 
-        List<String> result = new ArrayList<>();
+        Set<String> result = new HashSet<>();
 
         // 词法分析器
         PerceptronLexicalAnalyzer analyzer = null;
@@ -176,13 +176,13 @@ public class RelationUtil {
      * @param i 词语索引
      * @return 三元组列表
      */
-    private static List<String> extract(List<CoNLLWord> parser,
+    private static Set<String> extract(List<CoNLLWord> parser,
                                List<Map<String, List<CoNLLWord>>> dict,
                                int i){
         CoNLLWord word = parser.get(i);
         Map<String, List<CoNLLWord>> dic = dict.get(i);
 
-        List<String> result = new ArrayList<>();
+        Set<String> result = new HashSet<>();
 
         if (word.CPOSTAG.equals("v")){
 
@@ -203,6 +203,7 @@ public class RelationUtil {
                         String rearEntity = completeEntity(parser, dict, entity2.ID-1);
                         entityMap.clear();
 
+                        result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                         result.add(preEntity + "," + relation + "," + rearEntity);
                     }
 
@@ -232,6 +233,7 @@ public class RelationUtil {
 
                                     String relation = word.LEMMA + complement.LEMMA + subjoin.LEMMA;
 
+                                    result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                                     result.add(preEntity + "," + relation + "," + rearEntity);
                                 }
                             }else {
@@ -267,6 +269,7 @@ public class RelationUtil {
 
                             String relation = adverbial.LEMMA + word.LEMMA;
 
+                            result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                             result.add(preEntity + "," + relation + "," + rearEntity);
                         }
                     }
@@ -297,6 +300,7 @@ public class RelationUtil {
 
                                 String relation = adverbial.LEMMA + word.LEMMA + complement.LEMMA;
 
+                                result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                                 result.add(preEntity + "," + relation + "," + rearEntity);
                             }
                         }
@@ -320,6 +324,7 @@ public class RelationUtil {
                         String rearEntity = completeEntity(parser, dict, entity2.ID-1);
                         entityMap.clear();
 
+                        result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                         result.add(preEntity + "," + relation + "," + rearEntity);
                     }
                 }
@@ -352,6 +357,7 @@ public class RelationUtil {
 
                                 String relation = word.LEMMA + prep.LEMMA;
 
+                                result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                                 result.add(preEntity + "," + relation + "," + rearEntity);
                             }
                         }
@@ -384,6 +390,7 @@ public class RelationUtil {
 
                                     String relation = word.LEMMA;
 
+                                    result.add(entity1.LEMMA + "," + relation + "," + entity2.LEMMA);
                                     result.add(preEntity + "," + relation + "," + rearEntity);
                                 }
                             }
@@ -500,7 +507,7 @@ public class RelationUtil {
      * 主函数，提取输入句子中的所有三元组关系
      * @param text 待提取三元组关系的句子
      */
-    public static List<String> main(String text){
+    public static Set<String> main(String text){
 
         List<CoNLLWord> parser = parser(text);
 
@@ -512,7 +519,7 @@ public class RelationUtil {
         }
         */
 
-        List<String> result = relation(parser, dict);
+        Set<String> result = relation(parser, dict);
 
         return result;
     }

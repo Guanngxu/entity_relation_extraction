@@ -3,6 +3,7 @@ package com.entityrelation.utils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by 刘绪光 on 2018/4/19.
@@ -55,7 +56,7 @@ public class FileUtil {
      * @param contentList
      * @throws Exception
      */
-    public static void writeFile(String path, List<String> contentList) throws Exception{
+    public static void writeFile(String path, Set<String> contentList) throws Exception{
 
         File file = new File(path);
         file.createNewFile();
