@@ -100,9 +100,9 @@ public class Test {
 
     public static void main(String[] args) throws Exception{
 
-        System.out.println(HanLP.segment("经济责任审计"));
+        System.out.println(HanLP.segment("海洋由水组成"));
 
-        CoNLLSentence sentence = MaxEntDependencyParser.compute("经济责任审计");
+        CoNLLSentence sentence = HanLP.parseDependency("海洋由水组成");
         System.out.println(sentence);
         // 可以方便地遍历它
         for (CoNLLWord word : sentence)
@@ -110,7 +110,9 @@ public class Test {
             System.out.printf("%s --(%s)--> %s\n", word.LEMMA, word.DEPREL, word.HEAD.LEMMA);
         }
 
-        // testFileRelation();
+        Set<String> res = RelationUtil.main("海洋由水组成");
+
+        //testFileRelation();
     }
 
 }

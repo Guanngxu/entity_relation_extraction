@@ -513,6 +513,7 @@ public class RelationUtil {
 
         List<Map<String, List<CoNLLWord>>> dict = dict(text);
 
+
         /*
         for (int i = 0; i < dict.size(); i++) {
             System.out.println((i+1) + " " + dict.get(i));
