@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/entity_relation_extraction.iml" filepath="$PROJECT_DIR$/.idea/entity_relation_extraction.iml" />
+      <module fileurl="file://$PROJECT_DIR$/entity_relation.iml" filepath="$PROJECT_DIR$/entity_relation.iml" />
     </modules>
   </component>
 </project>
