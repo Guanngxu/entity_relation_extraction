@@ -17,7 +17,8 @@ public class Main {
                 "刘小绪洗干净了衣服",
                 "海洋由水组成",
                 "父亲是来自肯尼亚的留学生",
-                "刘小绪就职于学校"
+                "刘小绪就职于学校",
+                "中国的首都是北京"
         };
 
         Set<String> result = RelationUtil.entityRelation(testArr);
