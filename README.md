@@ -2,7 +2,7 @@
 
 ### 功能
 
-使用依存句法分析抽取非结构化数据中的事实三元组（实体，关系，实体），详细内容可以查看[实体关系抽取](https://github.com/mengxiaoxu/entity_relation_extraction/blob/master/实体关系抽取.md)
+使用依存句法分析抽取非结构化数据中的事实三元组（实体，关系，实体），详细内容可以查看[实体关系抽取](https://github.com/mengxiaoxu/entity_relation_extraction/blob/master/实体关系抽取.md)，**此项目不再维护**
 
 ### 使用
 
